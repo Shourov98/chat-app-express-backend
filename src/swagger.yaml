@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: Chat App API
+  version: 1.0.0
+  description: API documentation for the Chat App
+servers:
+  - url: http://localhost:5001
+paths:
+  /api/auth/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful
+        '400':
+          description: Invalid credentials
+  /api/auth/signup:
+    post:
+      summary: User registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - username
+                - email
+                - password
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Invalid input
+  /api/auth/logout:
+    post:
+      summary: User logout
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Not authenticated
+
+  /api/messages/users:
+    get:
+      summary: Get users for sidebar
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of users for sidebar
+        '401':
+          description: Unauthorized
+
+  /api/messages/{id}:
+    get:
+      summary: Get messages with a user
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID to get messages with
+      responses:
+        '200':
+          description: List of messages
+        '401':
+          description: Unauthorized
+
+  /api/messages/send/{id}:
+    post:
+      summary: Send a message to a user
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID to send message to
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              required:
+                - message
+      responses:
+        '201':
+          description: Message sent successfully
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
